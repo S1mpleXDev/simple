@@ -1,1 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>AutoBoost SMM - Cheapest & Fastest Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3); }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen">
+  <!-- NAV -->
+  <nav class="bg-black border-b border-zinc-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-rocket text-emerald-500 text-3xl"></i>
+        <span class="font-bold text-2xl">AutoBoost</span>
+      </div>
+      <div class="flex gap-8 text-sm">
+        <button onclick="showSection('home')" class="hover:text-emerald-400">Home</button>
+        <button onclick="showSection('services')" class="hover:text-emerald-400">Services</button>
+        <button onclick="showSection('dashboard')" class="hover:text-emerald-400">Dashboard</button>
+        <button onclick="logout()" class="hover:text-red-400">Logout</button>
+      </div>
+    </div>
+  </nav>
 
+  <!-- HOME -->
+  <div id="home" class="section active">
+    <div class="bg-gradient-to-br from-zinc-900 to-black py-24">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <h1 class="text-6xl font-bold mb-6">The Cheapest SMM Panel<br>with <span class="text-emerald-500">Hidden Profit</span></h1>
+        <p class="text-2xl text-zinc-400 mb-10">Start at $0.0002 per 1000 • 4,500+ services • Instant Delivery</p>
+        <button onclick="showSection('dashboard')" class="bg-emerald-500 hover:bg-emerald-600 px-10 py-4 rounded-full text-xl font-semibold">Get Started Free</button>
+      </div>
+    </div>
+    <!-- Stats, How it works, Platforms - omitted for brevity but easy to copy from original -->
+  </div>
+
+  <!-- SERVICES (public list with your markup) -->
+  <div id="services" class="section max-w-7xl mx-auto px-6 py-12">
+    <div class="flex justify-between mb-8">
+      <input id="search" placeholder="Search services..." class="bg-zinc-900 border border-zinc-700 rounded-xl px-5 py-3 w-96 focus:outline-none focus:border-emerald-500" onkeyup="filterServices()">
+      <div class="text-emerald-400">Your prices include +100% hidden profit</div>
+    </div>
+    <div id="services-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="section max-w-7xl mx-auto px-6 py-12">
+    <div class="flex justify-between items-center mb-10">
+      <div>
+        <div class="text-zinc-400">Balance</div>
+        <div id="balance" class="text-5xl font-bold text-emerald-500">$0.00</div>
+      </div>
+      <button onclick="showAddFunds()" class="bg-white text-black px-8 py-3 rounded-2xl font-semibold flex items-center gap-2">
+        <i class="fa-solid fa-plus"></i> Add Funds (Manual PayPal)
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Recent Orders -->
+      <div class="lg:col-span-7 bg-zinc-900 rounded-3xl p-6">
+        <h2 class="text-xl mb-4">Recent Orders</h2>
+        <div id="orders-list" class="space-y-3"></div>
+      </div>
+      <!-- Quick Order -->
+      <div class="lg:col-span-5 bg-zinc-900 rounded-3xl p-6">
+        <h2 class="text-xl mb-4">Quick Order</h2>
+        <!-- Filled dynamically when service clicked -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL (secret gateway) -->
+  <div id="admin" class="section max-w-7xl mx-auto px-6 py-12 hidden">
+    <div class="bg-red-900/30 border border-red-500 rounded-3xl p-8">
+      <h2 class="text-3xl font-bold mb-6 text-red-400">🔒 Admin Panel</h2>
+      <div id="admin-content">
+        <!-- Populated if you are admin -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div id="modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div id="modal-content" class="bg-zinc-900 rounded-3xl p-8 max-w-md w-full"></div>
+  </div>
+
+  <script>
+    // ====================== CONFIG ======================
+    const SUPABASE_URL = 'https://mctaecekxcrvccrfyrri.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_fGxDIehCBrUavbf6vIgESQ_ZjNqi1Mr'; // your publishable key
+    const AUTO_SM_API_KEY = 'YOUR_AUTO_SM_API_KEY_HERE'; // ← REPLACE WITH YOURS
+    const MARKUP = 2; // doubles every price (5$ → 10$, 15$ → 20$)
+    const ADMIN_EMAIL = 'YOUR-GOOGLE-EMAIL@gmail.com'; // your Gmail for admin access
+
+    // Supabase client
+    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+    let services = [];
+
+    // Anti-inspect / devtools detector
+    function detectDevTools() {
+      const threshold = 160;
+      const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+      const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+      if (widthThreshold || heightThreshold) {
+        document.body.innerHTML = '<div class="text-red-500 text-center mt-40 text-4xl">DevTools detected. Refresh to continue.</div>';
+      }
+    }
+    setInterval(detectDevTools, 1000);
+    document.addEventListener('contextmenu', e => e.preventDefault());
+
+    // Show section
+    function showSection(section) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(section).classList.add('active');
+      if (section === 'services') loadServices();
+      if (section === 'dashboard') loadDashboard();
+    }
+
+    // Auth
+    async function initAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      currentUser = session?.user;
+      if (currentUser) {
+        await ensureProfile();
+        showSection('dashboard');
+        if (currentUser.email === ADMIN_EMAIL) showAdmin();
+      } else {
+        showSection('home');
+      }
+    }
+
+    async function ensureProfile() {
+      const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+      if (!data) {
+        await supabase.from('profiles').insert({ id: currentUser.id, balance: 0 });
+      }
+    }
+
+    async function googleLogin() {
+      await supabase.auth.signInWithOAuth({ provider: 'google' });
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      location.reload();
+    }
+
+    // Services from auto-sm with markup
+    async function loadServices() {
+      if (!AUTO_SM_API_KEY || AUTO_SM_API_KEY.includes('YOUR')) {
+        document.getElementById('services-grid').innerHTML = '<p class="text-red-400">Please set your AUTO_SM_API_KEY in the code.</p>';
+        return;
+      }
+      const res = await fetch(`https://auto-sm.com/api/v2?action=services&key=${AUTO_SM_API_KEY}`);
+      const raw = await res.json();
+      services = raw.map(s => ({
+        ...s,
+        rate: parseFloat(s.rate) * MARKUP   // YOUR PROFIT
+      }));
+      renderServices(services);
+    }
+
+    function renderServices(srv) {
+      const grid = document.getElementById('services-grid');
+      grid.innerHTML = srv.map(s => `
+        <div class="service-card bg-zinc-900 border border-zinc-800 rounded-3xl p-6 cursor-pointer" onclick="openOrderModal(${s.service})">
+          <div class="text-emerald-400 text-xs mb-1">${s.category || 'Social'}</div>
+          <div class="font-semibold text-lg mb-3">${s.name}</div>
+          <div class="flex justify-between text-sm">
+            <div>Min: ${s.min} • Max: ${s.max}</div>
+            <div class="font-bold text-emerald-500">$${s.rate}/1000</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterServices() {
+      const term = document.getElementById('search').value.toLowerCase();
+      const filtered = services.filter(s => s.name.toLowerCase().includes(term));
+      renderServices(filtered);
+    }
+
+    // Order modal
+    let selectedService = null;
+    async function openOrderModal(svcId) {
+      selectedService = services.find(s => s.service == svcId);
+      if (!selectedService) return;
+      const html = `
+        <h3 class="text-2xl mb-6">${selectedService.name}</h3>
+        <input id="order-link" placeholder="Post/Link URL" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 mb-4">
+        <input id="order-qty" type="number" value="${selectedService.min}" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 mb-6">
+        <div class="flex justify-between text-sm mb-6">
+          <span>Price per 1000</span>
+          <span class="font-bold text-emerald-500">$${selectedService.rate}</span>
+        </div>
+        <button onclick="placeOrder()" class="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl font-bold">Place Order - Pay from Balance</button>
+      `;
+      document.getElementById('modal-content').innerHTML = html;
+      document.getElementById('modal').classList.remove('hidden');
+    }
+
+    async function placeOrder() {
+      const link = document.getElementById('order-link').value;
+      const qty = parseInt(document.getElementById('order-qty').value);
+      if (!link || qty < selectedService.min) return alert('Invalid order');
+
+      const pricePaid = (qty / 1000) * selectedService.rate;
+
+      // Deduct from Supabase balance
+      const { data: profile } = await supabase.from('profiles').select('balance').eq('id', currentUser.id).single();
+      if (profile.balance < pricePaid) return alert('Not enough balance!');
+
+      await supabase.from('profiles').update({ balance: profile.balance - pricePaid }).eq('id', currentUser.id);
+
+      // Place real order on auto-sm
+      const form = new URLSearchParams();
+      form.append('key', AUTO_SM_API_KEY);
+      form.append('action', 'add');
+      form.append('service', selectedService.service);
+      form.append('link', link);
+      form.append('quantity', qty);
+
+      const res = await fetch('https://auto-sm.com/api/v2', { method: 'POST', body: form });
+      const result = await res.json();
+
+      // Save to your DB
+      await supabase.from('orders').insert({
+        user_id: currentUser.id,
+        auto_order_id: result.order || 'pending',
+        service_name: selectedService.name,
+        link: link,
+        quantity: qty,
+        price_paid: pricePaid,
+        status: result.status || 'pending'
+      });
+
+      alert(`Order placed! ID: ${result.order}`);
+      document.getElementById('modal').classList.add('hidden');
+      loadDashboard();
+    }
+
+    // Dashboard
+    async function loadDashboard() {
+      const { data: profile } = await supabase.from('profiles').select('balance').eq('id', currentUser.id).single();
+      document.getElementById('balance').textContent = `$${parseFloat(profile.balance || 0).toFixed(2)}`;
+
+      const { data: orders } = await supabase.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(10);
+      const html = orders.map(o => `
+        <div class="bg-zinc-800 rounded-2xl p-4 flex justify-between">
+          <div>
+            <div class="font-medium">${o.service_name}</div>
+            <div class="text-xs text-zinc-500">${o.link}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-emerald-400">$${o.price_paid}</div>
+            <div class="text-xs ${o.status === 'completed' ? 'text-green-400' : 'text-amber-400'}">${o.status}</div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('orders-list').innerHTML = html || '<p class="text-zinc-500">No orders yet</p>';
+    }
+
+    // Add Funds (manual PayPal example)
+    function showAddFunds() {
+      const html = `
+        <h3 class="text-2xl mb-6">Add Funds</h3>
+        <p class="mb-8 text-zinc-400">Send via PayPal to <strong>your-paypal@email.com</strong> and message admin with transaction ID.</p>
+        <div class="grid grid-cols-3 gap-4">
+          <button onclick="requestTopup(10)" class="bg-zinc-800 hover:bg-zinc-700 py-6 rounded-2xl">$10</button>
+          <button onclick="requestTopup(25)" class="bg-zinc-800 hover:bg-zinc-700 py-6 rounded-2xl">$25</button>
+          <button onclick="requestTopup(50)" class="bg-zinc-800 hover:bg-zinc-700 py-6 rounded-2xl">$50</button>
+        </div>
+        <button onclick="closeModal()" class="mt-6 w-full text-zinc-400">Close</button>
+      `;
+      document.getElementById('modal-content').innerHTML = html;
+      document.getElementById('modal').classList.remove('hidden');
+    }
+
+    function requestTopup(amount) {
+      alert(`Send $${amount} to your PayPal and tell admin the TX ID. Balance will be added manually.`);
+      // In real setup you can save pending topup to DB here
+      closeModal();
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    // Admin
+    function showAdmin() {
+      document.getElementById('admin').classList.remove('hidden');
+      // You can expand this to show all users, total profit, etc.
+      document.getElementById('admin-content').innerHTML = `<p class="text-emerald-400">Welcome Admin! Total users: (query via Supabase here)</p>`;
+    }
+
+    // Tailwind script
+    function initTailwind() {
+      // Already loaded via CDN
+    }
+
+    // Start
+    window.onload = () => {
+      initAuth();
+      initTailwind();
+      // Listen auth changes
+      supabase.auth.onAuthStateChange((event, session) => {
+        currentUser = session?.user;
+        if (currentUser) ensureProfile();
+      });
+    };
+  </script>
+</body>
+</html>
