@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Demo Texture Maker v1.1</title>
+<title>Demo Texture Maker v1.2</title>
 <style>
 :root{--sl:env(safe-area-inset-left,0px);--sr:env(safe-area-inset-right,0px);--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);--gut:10px;
 --bg:#08090b;--panel:#101216;--panel2:#171a20;--field:#0b0d10;--line:#2a2e37;--line2:#3a3f4b;--text:#f1f3f6;--muted:#9299a5;--accent:#8aa7ff;--accent-ink:#0b0d10;--danger:#ff6f7c;--hover:#232831;--shadow:0 18px 55px #000a}
@@ -21,13 +21,13 @@ button{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webk
 .app{position:fixed;inset:0;display:flex;flex-direction:column;padding-bottom:var(--sb)}
 .grow{flex:1}
 /* top bar */
-.topbar{flex:0 0 auto;display:flex;align-items:center;gap:8px;height:calc(54px + var(--st));padding:var(--st) calc(var(--sr) + var(--gut)) 0 calc(var(--sl) + var(--gut));border-bottom:1px solid var(--line);background:var(--panel);overflow-x:auto;scrollbar-width:none}
+.topbar{flex:0 0 auto;display:flex;align-items:center;gap:6px;height:calc(48px + var(--st));padding:var(--st) calc(var(--sr) + var(--gut)) 0 calc(var(--sl) + var(--gut));border-bottom:1px solid var(--line);background:var(--panel);overflow-x:auto;scrollbar-width:none}
 .topbar::-webkit-scrollbar{display:none}
 .brand{display:flex;align-items:center;gap:9px;font-weight:750;white-space:nowrap;flex:0 0 auto}
 .brand small{font-size:10px;color:var(--muted);font-weight:600}
 .mark{width:28px;height:28px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;background:var(--panel2)}
 .mark:before{content:"";width:13px;height:13px;background:var(--text);opacity:.85;clip-path:polygon(0 25%,25% 0,42% 15%,58% 15%,75% 0,100% 25%,92% 100%,8% 100%)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line2);background:var(--panel2);border-radius:9px;cursor:pointer;font-size:13px;white-space:nowrap;flex:0 0 auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;padding:0 12px;border:1px solid var(--line2);background:var(--panel2);border-radius:9px;cursor:pointer;font-size:13px;white-space:nowrap;flex:0 0 auto}
 .btn:hover{background:var(--hover)}
 .btn:active{transform:translateY(1px)}
 .btn:disabled{opacity:.38;pointer-events:none}
@@ -46,9 +46,9 @@ button{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webk
 .seg button.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
 /* body / drawers */
 .body{flex:1 1 0;min-height:0;position:relative;display:flex}
-.drawer{flex:0 0 auto;width:290px;background:var(--panel);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.drawer{flex:0 0 auto;width:300px;background:var(--panel);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .drawer.left{border-right:1px solid var(--line);padding-left:var(--sl)}
-.drawer.right{border-left:1px solid var(--line);width:310px;padding-right:var(--sr)}
+.drawer.right{border-left:1px solid var(--line);width:320px;padding-right:var(--sr)}
 .body:not(.tools-open) .drawer.left,.body:not(.opts-open) .drawer.right{display:none}
 .drawerHead{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line)}
 .drawerHead strong{font-size:14px}
@@ -61,10 +61,10 @@ button{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webk
 .mobCard{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:9px;display:flex;align-items:center;gap:9px}
 .mobIcon{width:32px;height:32px;border-radius:7px;border:1px solid var(--line2);background:linear-gradient(145deg,#dfe4ec,#6f7888);flex:0 0 auto}
 .mobCard b{font-size:12px;display:block}.mobCard span{display:block;color:var(--muted);font-size:11px;margin-top:2px}
-.toolgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.tool{display:flex;align-items:center;gap:6px;min-height:40px;padding:0 8px;border:1px solid var(--line);background:var(--panel2);border-radius:8px;cursor:pointer;font-size:11px;text-align:left;min-width:0}
+.toolgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.tool{display:flex;align-items:center;gap:4px;min-height:36px;padding:0 5px;border:1px solid var(--line);background:var(--panel2);border-radius:8px;cursor:pointer;font-size:11px;text-align:left;min-width:0}
 .tool svg{flex:0 0 auto}
-.tool span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tool span{overflow:hidden;text-overflow:clip;white-space:nowrap;font-size:10px;letter-spacing:-.15px}
 .tool:hover{background:var(--hover)}
 .tool.on{border-color:var(--accent);background:var(--hover);box-shadow:inset 0 0 0 1px var(--accent)}
 .row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
@@ -124,6 +124,13 @@ body.light .pill{background:#ffffffc8;color:#333;border-color:#0002}
 .quickbar .color{height:40px;width:44px}
 .quickbar input[type=range]{width:90px;flex:0 0 90px}
 .sepv{width:1px;height:26px;background:var(--line2);flex:0 0 1px;margin:0 2px}
+
+.editorMode{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;flex:0 0 auto}.editorMode button{border:0;border-right:1px solid var(--line2);background:var(--panel2);min-height:30px;padding:0 9px;font-size:11px;cursor:pointer}.editorMode button:last-child{border-right:0}.editorMode button.on{background:var(--accent);color:var(--accent-ink);font-weight:700}
+#editor3D{display:none;flex:1;min-width:0;min-height:0;width:100%;height:100%;background:radial-gradient(circle at 50% 38%,#2a303b,#0d0f13 72%);touch-action:none;cursor:grab}
+#winTemplate.editor3d #drawArea{display:none}
+#winTemplate.editor3d #editor3D{display:block}
+.settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.settingsGrid .full{grid-column:1/-1}
+@media(max-width:1000px){.topbar{gap:5px}.topbar .brand{display:none}.topbar .grow{display:none}.topbar .btn{padding:0 8px}.topbar .btn.icon{width:32px}.topbar .seg button{padding:0 8px}.toolgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.tool span{font-size:11px}.tool{min-height:38px}}
 .scrim{display:none}
 .toast{position:fixed;left:50%;bottom:calc(var(--sb) + 84px);transform:translate(-50%,10px);background:var(--text);color:var(--bg);padding:9px 14px;border-radius:9px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.18s;z-index:200;max-width:86vw;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
@@ -153,15 +160,16 @@ body.light .pill{background:#ffffffc8;color:#333;border-color:#0002}
 <body>
 <div class="app" id="app">
 <header class="topbar">
-  <button type="button" class="btn" id="toggleTools" aria-pressed="false" title="Show or hide tools">&#9776;<span class="hideSm">&nbsp;Tools</span></button>
-  <div class="brand"><i class="mark"></i><span class="hideSm">Demo Texture Maker</span><small>v1.1</small></div>
+  <button type="button" class="btn" id="toggleTools" aria-pressed="false" title="Show or hide tools"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Tools</span></button>
+  <div class="brand"><i class="mark"></i><span class="hideSm">Demo Texture Maker</span><small>v1.2</small></div>
   <div class="seg" id="viewSeg" role="group" aria-label="Window"><button type="button" data-view="template">Template</button><button type="button" data-view="3d">3D</button><button type="button" data-view="split">Split</button></div>
   <span class="grow"></span>
-  <button type="button" class="btn icon" id="undoBtn" title="Undo" aria-label="Undo">&#8630;</button>
-  <button type="button" class="btn icon" id="redoBtn" title="Redo" aria-label="Redo">&#8631;</button>
-  <button type="button" class="btn icon" id="themeBtn" title="Light or dark theme" aria-label="Theme">&#9680;</button>
+  <button type="button" class="btn icon" id="undoBtn" title="Undo" aria-label="Undo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v1"/></svg></button>
+  <button type="button" class="btn icon" id="redoBtn" title="Redo" aria-label="Redo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0-6 6v1"/></svg></button>
+  <button type="button" class="btn icon" id="clearTop" title="Clear layer" aria-label="Clear layer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v5M14 11v5"/></svg></button>
+  <button type="button" class="btn icon" id="themeBtn" title="Light or dark theme" aria-label="Theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button>
   <button type="button" class="btn icon" id="helpBtn" title="Help" aria-label="Help">?</button>
-  <button type="button" class="btn primary" id="toggleOpts" aria-pressed="false">Export</button>
+  <button type="button" class="btn" id="toggleSettings" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="m19.4 15 .1.1-1.7 3-2-.8a8 8 0 0 1-2 .9L13.5 20h-3l-.3-2a8 8 0 0 1-2-.9l-2 .8-1.7-3 .1-.1 1.6-1.3a8 8 0 0 1 0-2.4L4.5 10l1.7-3 2 .8a8 8 0 0 1 2-.9l.3-2h3l.3 2a8 8 0 0 1 2 .9l2-.8 1.7 3-1.7 1.3a8 8 0 0 1 0 2.4z"/></svg><span>Settings</span></button><button type="button" class="btn primary" id="toggleOpts" aria-pressed="false">Export</button>
 </header>
 <div class="body" id="body">
 <aside class="drawer left" id="toolsDrawer" aria-label="Tools">
@@ -211,10 +219,10 @@ body.light .pill{background:#ffffffc8;color:#333;border-color:#0002}
       <div class="winbar">
         <button type="button" class="btn sm icon" id="zoomOut" aria-label="Zoom out">&minus;</button><span class="zoomRead" id="zoomRead">800%</span><button type="button" class="btn sm icon" id="zoomIn" aria-label="Zoom in">+</button>
         <button type="button" class="btn sm" id="fitBtn">Fit</button><button type="button" class="btn sm" id="actualBtn">1:1</button>
-        <span class="grow"></span>
+        <span class="editorMode" id="editorMode"><button type="button" class="on" data-editor="2d">2D</button><button type="button" data-editor="3d">3D</button></span><span class="grow"></span>
         <span id="objBar" class="row" style="flex-wrap:nowrap" hidden><button type="button" class="btn sm primary" id="objStamp">Stamp</button><button type="button" class="btn sm" id="objCancel">Cancel</button></span>
       </div>
-      <div class="wrapOuter"><div class="canvas-wrap" id="canvasWrap"><div class="holder"><canvas id="drawCanvas" width="64" height="32"></canvas></div></div><div class="chip" id="status">64 &times; 32</div></div>
+      <div class="wrapOuter"><div id="drawArea" class="canvas-wrap"><div class="holder"><canvas id="drawCanvas" width="64" height="32"></canvas></div></div><canvas id="editor3D" aria-label="3D drawing editor"></canvas><div class="chip" id="status">64 &times; 32</div></div>
     </section>
     <div class="divider" id="divider" role="separator" aria-label="Resize windows"></div>
     <section class="win" id="win3d" aria-label="3D window">
@@ -232,6 +240,14 @@ body.light .pill{background:#ffffffc8;color:#333;border-color:#0002}
   <div class="quickbar" id="quickbar"></div>
 </main>
 <aside class="drawer right" id="optsDrawer" aria-label="Export and preview">
+  <div class="tabs" id="rightTabs"><button type="button" class="on" data-right="export">Export</button><button type="button" data-right="settings">Settings</button></div>
+  <div id="settingsPanel" class="tabPanel" data-right-panel="settings">
+    <div class="sec"><h3>Editor settings</h3><div class="chk"><label for="defaultView">Start in Split view</label><input id="defaultView" type="checkbox" checked></div><div class="chk"><label for="default3D">Start 3D editor mode</label><input id="default3D" type="checkbox"></div><div class="chk"><label for="rememberView">Remember window layout</label><input id="rememberView" type="checkbox" checked></div></div>
+    <div class="sec"><h3>3D display</h3><div class="chk"><label for="bodyGuides">Body-part outlines</label><input id="bodyGuides" type="checkbox" checked></div><div class="chk"><label for="previewLines">Preview outlines</label><input id="previewLines" type="checkbox" checked></div><div class="chk"><label for="defaultAutoFit">Auto-fit canvas</label><input id="defaultAutoFit" type="checkbox" checked></div></div>
+    <div class="sec"><h3>Drawing</h3><div class="chk"><label for="liveShapes">Live shape preview</label><input id="liveShapes" type="checkbox" checked></div><div class="chk"><label for="snapPixels">Pixel snapping</label><input id="snapPixels" type="checkbox" checked></div><div class="chk"><label for="touchDraw">Touch drawing</label><input id="touchDraw" type="checkbox" checked></div></div>
+    <div class="sec"><button type="button" class="btn wide" id="resetSettings">Reset settings</button></div>
+  </div>
+  <div id="exportPanel" class="tabPanel on" data-right-panel="export">
   <div class="drawerHead"><strong>Export &amp; preview</strong><button type="button" class="btn sm icon" id="closeOpts" aria-label="Close export panel">&#10005;</button></div>
   <div class="sec"><h3>Pack</h3>
     <label>Pack name<input id="packName" class="field" value="My Wolf Pack"></label>
@@ -246,6 +262,7 @@ body.light .pill{background:#ffffffc8;color:#333;border-color:#0002}
     <div class="chk"><label for="modelOutline">Outline</label><input id="modelOutline" type="checkbox" checked></div>
     <div class="chk"><label for="modelShading">Shading</label><input id="modelShading" type="checkbox" checked></div>
     <div class="chk"><label for="autoRotate">Auto rotate</label><input id="autoRotate" type="checkbox"></div>
+  </div>
   </div>
 </aside>
 <div class="scrim" id="scrim"></div>
@@ -330,7 +347,7 @@ const PARTS=[
 /* ---------- state ---------- */
 const S={tool:'pencil',color:'#ffffff',size:1,opacity:1,zoom:8,autoFit:true,grid:true,guide:true,labels:true,guideOp:.55,pp:true,mx:false,my:false,filled:false,nearest:true,lock:true,
 layers:[],active:0,undo:[],redo:[],drawing:false,start:null,last:null,preview:null,selection:null,clip:null,obj:null,og:null,hover:null,space:false,light:false,
-view:'split',angle:-.6,pitch:.28,zoom3:1,pose:'stand',baby:false,mode3:'paint',ground:true,outline:true,shading:true,autoRot:false,time:0};
+view:'split',editorMode:'2d',angle:-.6,pitch:.28,zoom3:1,pose:'stand',baby:false,mode3:'paint',ground:true,outline:true,shading:true,autoRot:false,time:0,liveShapes:true,touchDraw:true};
 let stroke=null;
 
 /* ---------- layers & history ---------- */
@@ -357,7 +374,7 @@ function hexRGB(){const h=S.color.slice(1);return[parseInt(h.slice(0,2),16),pars
 function rgba(){const c=hexRGB();return[c[0],c[1],c[2],Math.round(S.opacity*255)]}
 function linePts(x0,y0,x1,y1){const o=[];let dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1,e=dx+dy;for(;;){o.push([x0,y0]);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx}if(e2<=dx){e+=dx;y0+=sy}}return o}
 function footprint(x,y,tool){const out=[];
- if(tool==='brush'){const d=Math.max(2,S.size*2),r=d/2,ox=d%2?x+.5:x,oy=d%2?y+.5:y,lim=(r-.2)*(r-.2);
+ if(tool==='brush'){const d=Math.max(1,S.size),r=d/2,ox=d%2?x+.5:x,oy=d%2?y+.5:y,lim=(r-.2)*(r-.2);
   for(let py=Math.floor(oy-r);py<=Math.ceil(oy+r);py++)for(let px=Math.floor(ox-r);px<=Math.ceil(ox+r);px++){const dx=px+.5-ox,dy=py+.5-oy;if(dx*dx+dy*dy<=lim)out.push([px,py])}}
  else{const s=S.size,x0=x-Math.floor(s/2),y0=y-Math.floor(s/2);for(let j=0;j<s;j++)for(let i=0;i<s;i++)out.push([x0+i,y0+j])}
  return out}
@@ -503,7 +520,8 @@ function endPointer(e){const wasMulti=ptrs.size>1;ptrs.delete(e.pointerId);
  if(shapeTools.has(S.tool)&&S.preview&&e.type!=='pointercancel')commitShape();
  S.preview=null;stroke=null;redraw()}
 draw.addEventListener('pointerup',endPointer);draw.addEventListener('pointercancel',endPointer);
-draw.addEventListener('pointerleave',()=>{S.hover=null;redraw()});
+draw.addEventListener('pointerleave',()=>{if(!S.drawing){S.hover=null;redraw()}});
+draw.addEventListener('lostpointercapture',e=>{if(S.drawing){const fake={type:'pointerup',pointerType:e.pointerType||'touch'};endPointer(fake)}});
 draw.addEventListener('contextmenu',e=>e.preventDefault());
 wrap.addEventListener('wheel',e=>{e.preventDefault();zoomAt(S.zoom*(e.deltaY<0?1.15:1/1.15),e.clientX,e.clientY)},{passive:false});
 document.addEventListener('gesturestart',e=>e.preventDefault());
@@ -535,14 +553,14 @@ $('fitBtn').onclick=fitCanvas;$('actualBtn').onclick=()=>setZoom(1);
 function flip(h){if(!layerOK())return;pushUndo();const l=layer(),t=document.createElement('canvas');t.width=W;t.height=H;const c=t.getContext('2d');if(h){c.translate(W,0);c.scale(-1,1)}else{c.translate(0,H);c.scale(1,-1)}c.drawImage(l.canvas,0,0);l.ctx.clearRect(0,0,W,H);l.ctx.drawImage(t,0,0);redraw()}
 $('flipX').onclick=()=>flip(true);$('flipY').onclick=()=>flip(false);
 $('rot180').onclick=()=>{if(!layerOK())return;pushUndo();const l=layer(),t=document.createElement('canvas');t.width=W;t.height=H;const c=t.getContext('2d');c.translate(W,H);c.rotate(Math.PI);c.drawImage(l.canvas,0,0);l.ctx.clearRect(0,0,W,H);l.ctx.drawImage(t,0,0);redraw()};
-$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;
+$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('clearTop').onclick=()=>{if(!layerOK())return;pushUndo();layer().ctx.clearRect(0,0,W,H);redraw();};
 /* image tab */
 function pickFile(){$('fileInput').click()}
 $('importImage').onclick=pickFile;$('importBtn').onclick=()=>{document.querySelector('[data-tab=image]').click();pickFile()};
 $('fileInput').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const url=URL.createObjectURL(f),img=new Image();
- img.onload=()=>{const s=Math.min((W-4)/img.width,(H-4)/img.height,1),w=Math.max(1,img.width*s),h=Math.max(1,img.height*s);S.obj={img,x:(W-w)/2,y:(H-h)/2,w,h,rot:0,op:1};URL.revokeObjectURL(url);showObjBar();setTool('move');redraw();toast('Move, resize or rotate, then Stamp')};
+ img.onload=()=>{const s=Math.max(W/img.width,H/img.height),w=W,h=H;S.obj={img,x:0,y:0,w,h,rot:0,op:1};URL.revokeObjectURL(url);showObjBar();setTool('move');redraw();toast('Move, resize or rotate, then Stamp')};
  img.onerror=()=>{URL.revokeObjectURL(url);toast("Couldn't read that image")};img.src=url};
-$('fitImg').onclick=()=>{const o=S.obj;if(!o)return;const s=Math.min(W/o.w,H/o.h,1);o.w*=s;o.h*=s;o.x=(W-o.w)/2;o.y=(H-o.h)/2;o.rot=0;showObjBar();redraw()};
+$('fitImg').onclick=()=>{const o=S.obj;if(!o)return;o.w=W;o.h=H;o.x=0;o.y=0;o.rot=0;showObjBar();redraw()};
 $('removeObj').onclick=$('objCancel').onclick=()=>{S.obj=null;showObjBar();redraw()};
 $('stampBtn').onclick=$('objStamp').onclick=commitObj;
 ['tx','ty','tw','th','tr','to'].forEach(id=>$(id).oninput=()=>{const o=S.obj;if(!o)return;o.x=+$('tx').value||0;o.y=+$('ty').value||0;o.w=Math.max(.5,+$('tw').value||1);o.h=Math.max(.5,+$('th').value||1);o.rot=+$('tr').value||0;o.op=clamp((+$('to').value||100)/100,.01,1);redraw()});
@@ -692,16 +710,33 @@ function loop(now){const dt=Math.min(.1,(now-lastT)/1000);lastT=now;
  if(S.view!=='template'){let dirty=need3D;if(S.pose==='walk'){S.time+=dt;dirty=true}if(S.autoRot){S.angle+=dt*.6;dirty=true}if(dirty){need3D=false;render3D()}}
  requestAnimationFrame(loop)}
 
+/* ---------- editor mode + settings ---------- */
+const editor3D=$('editor3D'),drawArea=$('drawArea'),winTemplate=$('winTemplate');
+let glE=null,progTE=null,progCE=null,uTE={},uCE={},texGLE=null,bufTE=null,bufCE=null,lastMvpE=null,meshE=null;
+function initEditorGL(){try{glE=editor3D.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:true})}catch(e){glE=null}if(!glE)return;const mk=(vs,fs)=>{const p=glE.createProgram();[[glE.VERTEX_SHADER,vs],[glE.FRAGMENT_SHADER,fs]].forEach(([t,src])=>{const sh=glE.createShader(t);glE.shaderSource(sh,src);glE.compileShader(sh);if(!glE.getShaderParameter(sh,glE.COMPILE_STATUS))throw new Error(glE.getShaderInfoLog(sh));glE.attachShader(p,sh)});glE.bindAttribLocation(p,0,'aPos');glE.bindAttribLocation(p,1,'aUv');glE.bindAttribLocation(p,2,'aSh');glE.linkProgram(p);if(!glE.getProgramParameter(p,glE.LINK_STATUS))throw new Error(glE.getProgramInfoLog(p));return p};try{progTE=mk('attribute vec3 aPos;attribute vec2 aUv;attribute float aSh;uniform mat4 uMvp;varying vec2 vUv;varying float vSh;void main(){gl_Position=uMvp*vec4(aPos,1.);vUv=aUv;vSh=aSh;}','precision mediump float;uniform sampler2D uTex;uniform float uShade;varying vec2 vUv;varying float vSh;void main(){vec4 c=texture2D(uTex,vUv);if(c.a<.04)discard;float s=mix(1.,vSh,uShade);gl_FragColor=vec4(c.rgb*s,1.);}');progCE=mk('attribute vec3 aPos;uniform mat4 uMvp;void main(){gl_Position=uMvp*vec4(aPos,1.);}','precision mediump float;uniform vec4 uColor;void main(){gl_FragColor=uColor;}')}catch(e){console.error(e);glE=null;return}uTE={mvp:glE.getUniformLocation(progTE,'uMvp'),tex:glE.getUniformLocation(progTE,'uTex'),shade:glE.getUniformLocation(progTE,'uShade')};uCE={mvp:glE.getUniformLocation(progCE,'uMvp'),color:glE.getUniformLocation(progCE,'uColor')};bufTE=glE.createBuffer();bufCE=glE.createBuffer();texGLE=glE.createTexture();glE.bindTexture(glE.TEXTURE_2D,texGLE);[[glE.TEXTURE_MIN_FILTER,glE.NEAREST],[glE.TEXTURE_MAG_FILTER,glE.NEAREST],[glE.TEXTURE_WRAP_S,glE.CLAMP_TO_EDGE],[glE.TEXTURE_WRAP_T,glE.CLAMP_TO_EDGE]].forEach(([k,v])=>glE.texParameteri(glE.TEXTURE_2D,k,v));}
+function resizeEditor3D(){if(!glE)return;const r=editor3D.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2.5),w=Math.max(1,Math.round(r.width*d)),h=Math.max(1,Math.round(r.height*d));if(editor3D.width!==w||editor3D.height!==h){editor3D.width=w;editor3D.height=h}requestEditor3D()}
+function editorMVP(){const w=editor3D.width,h=editor3D.height,as=w/h,dist=52*Math.max(1,.9/as)/S.zoom3;return mul(persp(.75,as,.5,700),mul(trans(0,0,-dist),mul(rotX(S.pitch),mul(rotY(S.angle+Math.PI),trans(0,-8,0)))))}
+function drawEditorColor(data,mode,col,mvp){glE.useProgram(progCE);glE.bindBuffer(glE.ARRAY_BUFFER,bufCE);glE.bufferData(glE.ARRAY_BUFFER,data,glE.DYNAMIC_DRAW);glE.enableVertexAttribArray(0);glE.vertexAttribPointer(0,3,glE.FLOAT,false,12,0);glE.uniformMatrix4fv(uCE.mvp,false,mvp);glE.uniform4fv(uCE.color,col);glE.drawArrays(mode,0,data.length/3)}
+function renderEditor3D(){if(!glE||S.editorMode!=='3d')return;resizeEditor3D();const w=editor3D.width,h=editor3D.height;if(w<2||h<2)return;glE.viewport(0,0,w,h);glE.clearColor(S.light?.92:.05,S.light?.94:.06,S.light?.96:.08,1);glE.clear(glE.COLOR_BUFFER_BIT|glE.DEPTH_BUFFER_BIT);glE.enable(glE.DEPTH_TEST);const m=editorMVP();lastMvpE=m;meshE=buildMesh();glE.bindTexture(glE.TEXTURE_2D,texGLE);glE.pixelStorei(glE.UNPACK_FLIP_Y_WEBGL,false);glE.texImage2D(glE.TEXTURE_2D,0,glE.RGBA,glE.RGBA,glE.UNSIGNED_BYTE,texCanvas());glE.useProgram(progTE);glE.bindBuffer(glE.ARRAY_BUFFER,bufTE);glE.bufferData(glE.ARRAY_BUFFER,meshE.tri,glE.DYNAMIC_DRAW);glE.enableVertexAttribArray(0);glE.enableVertexAttribArray(1);glE.enableVertexAttribArray(2);glE.vertexAttribPointer(0,3,glE.FLOAT,false,24,0);glE.vertexAttribPointer(1,2,glE.FLOAT,false,24,12);glE.vertexAttribPointer(2,1,glE.FLOAT,false,24,20);glE.uniformMatrix4fv(uTE.mvp,false,m);glE.uniform1f(uTE.shade,S.shading?1:0);glE.activeTexture(glE.TEXTURE0);glE.uniform1i(uTE.tex,0);glE.drawArrays(glE.TRIANGLES,0,meshE.n);if(S.outline&&meshE.lines.length)drawEditorColor(meshE.lines,glE.LINES,[S.light?0:.95,S.light?0:.95,S.light?0:.95,.8],m)}
+function requestEditor3D(){requestAnimationFrame(renderEditor3D)}
+function setEditorMode(v){S.editorMode=v;document.querySelectorAll('#editorMode button').forEach(b=>b.classList.toggle('on',b.dataset.editor===v));winTemplate.classList.toggle('editor3d',v==='3d');if(v==='3d'){resizeEditor3D();requestEditor3D()}else{paint()}}
+document.querySelectorAll('#editorMode button').forEach(b=>b.onclick=()=>setEditorMode(b.dataset.editor));
+editor3D.addEventListener('pointerdown',e=>{e.preventDefault();editor3D.setPointerCapture(e.pointerId);editor3D._drag={x:e.clientX,y:e.clientY}});editor3D.addEventListener('pointermove',e=>{if(!editor3D._drag)return;S.angle+=(e.clientX-editor3D._drag.x)*.01;S.pitch=clamp(S.pitch+(e.clientY-editor3D._drag.y)*.008,-.5,1.45);editor3D._drag={x:e.clientX,y:e.clientY};requestEditor3D()});editor3D.addEventListener('pointerup',e=>{editor3D._drag=null});editor3D.addEventListener('wheel',e=>{e.preventDefault();setZoom3(S.zoom3*(e.deltaY<0?1.1:1/1.1));requestEditor3D()},{passive:false});
+function paint3DEditorAt(e){const r=editor3D.getBoundingClientRect(),nx=(e.clientX-r.left)/r.width*2-1,ny=1-(e.clientY-r.top)/r.height*2,m=lastMvpE;if(!meshE||!m)return;let best=null;for(let qi=0;qi<meshE.quads.length;qi++){const q=meshE.quads[qi],s=[];for(const v of q.p){const X=m[0]*v[0]+m[4]*v[1]+m[8]*v[2]+m[12],Y=m[1]*v[0]+m[5]*v[1]+m[9]*v[2]+m[13],Z=m[2]*v[0]+m[6]*v[1]+m[10]*v[2]+m[14],ww=m[3]*v[0]+m[7]*v[1]+m[11]*v[2]+m[15];if(ww<=.01){s.length=0;break}s.push({x:X/ww,y:Y/ww,z:Z/ww,iw:1/ww})}if(s.length!==4)continue;for(const tr of [[0,1,2],[0,2,3]]){const a=s[tr[0]],b=s[tr[1]],c=s[tr[2]],dn=(b.y-c.y)*(a.x-c.x)+(c.x-b.x)*(a.y-c.y);if(Math.abs(dn)<1e-12)continue;const l1=((b.y-c.y)*(nx-c.x)+(c.x-b.x)*(ny-c.y))/dn,l2=((c.y-a.y)*(nx-c.x)+(a.x-c.x)*(ny-c.y))/dn,l3=1-l1-l2;if(l1<0||l2<0||l3<0)continue;const z=l1*a.z+l2*b.z+l3*c.z;if(best&&z>=best.z)continue;const w1=l1*a.iw,w2=l2*b.iw,w3=l3*c.iw,ws=w1+w2+w3,ua=q.uv[tr[0]],ub=q.uv[tr[1]],uc=q.uv[tr[2]];best={z,u:(w1*ua[0]+w2*ub[0]+w3*uc[0])/ws,v:(w1*ua[1]+w2*ub[1]+w3*uc[1])/ws}}}if(best&&PAINT3.has(S.tool)){const p={x:clamp(Math.floor(best.u),0,W-1),y:clamp(Math.floor(best.v),0,H-1)};if(!editor3D._paint){if(!strokeBegin(S.tool))return;editor3D._paint=true}strokePoint(p);redraw()}}
+editor3D.addEventListener('pointerdown',e=>{if(S.tool==='pan'||S.tool==='move'||S.mode3==='orbit')return;paint3DEditorAt(e)});editor3D.addEventListener('pointermove',e=>{if(editor3D._paint)paint3DEditorAt(e)});editor3D.addEventListener('pointerup',()=>{if(editor3D._paint){editor3D._paint=false;stroke=null;redraw()}});
+
 /* ---------- layout: windows, drawers, theme ---------- */
+document.querySelectorAll('#rightTabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#rightTabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('[data-right-panel]').forEach(p=>p.classList.toggle('on',p.dataset.rightPanel===b.dataset.right));});
+$('defaultView').onchange=e=>{if(e.target.checked)store.set('viewW','split')};$('default3D').onchange=e=>{store.set('editorMode',e.target.checked?'3d':'2d');setEditorMode(e.target.checked?'3d':'2d')};$('rememberView').onchange=e=>{if(!e.target.checked){localStorage.removeItem('dtm.viewW');localStorage.removeItem('dtm.viewN')}};$('bodyGuides').onchange=e=>{S.outline=e.target.checked;request3D();requestEditor3D()};$('previewLines').onchange=e=>{S.outline=e.target.checked;request3D();requestEditor3D()};$('defaultAutoFit').onchange=e=>{S.autoFit=e.target.checked;if(e.target.checked)fitCanvas()};$('liveShapes').onchange=e=>{S.liveShapes=e.target.checked};$('snapPixels').onchange=e=>{S.pp=e.target.checked;$('pp').checked=e.target.checked};$('touchDraw').onchange=e=>{S.touchDraw=e.target.checked};$('resetSettings').onclick=()=>{localStorage.removeItem('dtm.viewW');localStorage.removeItem('dtm.viewN');localStorage.removeItem('dtm.editorMode');location.reload()};
 const narrowMQ=window.matchMedia('(max-width:1000px)'),appEl=$('app'),bodyEl=$('body'),views=$('views');
-const ui={tools:{wide:store.get('toolsWide',true),narrow:false},opts:{wide:store.get('optsWide',false),narrow:false},quick:store.get('quick',null)};
+const ui={tools:{wide:store.get('toolsWide',true),narrow:false},opts:{wide:store.get('optsWide',false),narrow:false},quick:store.get('quick',null),settings:false};
 const narrow=()=>narrowMQ.matches;
 function applyLayout(){const n=narrow()?'narrow':'wide',t=ui.tools[n],o=ui.opts[n];bodyEl.classList.toggle('tools-open',t);bodyEl.classList.toggle('opts-open',o);$('toggleTools').setAttribute('aria-pressed',t);$('toggleOpts').setAttribute('aria-pressed',o);
  const q=ui.quick===null?narrow():ui.quick;appEl.classList.toggle('quick',q);$('quickChk').checked=q;requestAnimationFrame(afterLayout)}
 function afterLayout(){resize3D();if(S.autoFit)fitCanvas();else paint();request3D()}
 function toggleDrawer(which){const n=narrow()?'narrow':'wide';if(n==='narrow'){const v=!ui[which].narrow;ui.tools.narrow=false;ui.opts.narrow=false;ui[which].narrow=v}else{ui[which].wide=!ui[which].wide;store.set(which+'Wide',ui[which].wide)}applyLayout()}
 function closeDrawers(){ui.tools.narrow=false;ui.opts.narrow=false;applyLayout()}
-$('toggleTools').onclick=()=>toggleDrawer('tools');$('toggleOpts').onclick=()=>toggleDrawer('opts');
+$('toggleTools').onclick=()=>toggleDrawer('tools');$('toggleOpts').onclick=()=>{document.querySelector('#rightTabs [data-right=export]').click();toggleDrawer('opts')};$('toggleSettings').onclick=()=>{document.querySelector('#rightTabs [data-right=settings]').click();toggleDrawer('opts')};
 $('closeTools').onclick=()=>{const n=narrow()?'narrow':'wide';ui.tools[n]=false;if(n==='wide')store.set('toolsWide',false);applyLayout()};
 $('closeOpts').onclick=()=>{const n=narrow()?'narrow':'wide';ui.opts[n]=false;if(n==='wide')store.set('optsWide',false);applyLayout()};
 $('scrim').onclick=closeDrawers;
@@ -768,8 +803,10 @@ $('openMC').onclick=async()=>{try{const b=await makePack(),name=safeName()+'.mcp
 
 /* ---------- start ---------- */
 initGL();
+initEditorGL();
 setTheme(store.get('light',false),false);
 setViewFromStore();
+setEditorMode(store.get('editorMode','2d'));
 update3DHints();setTool('pencil');syncSize();showObjBar();
 newDoc(true);
 applyLayout();
@@ -778,5 +815,3 @@ requestAnimationFrame(loop);
 window.__dtm={S,pick3D,render3D,newDoc};
 })();
 </script>
-</body>
-</html>
