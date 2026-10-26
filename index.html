@@ -4,333 +4,481 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Instagram Task</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --bg: #09090b;
-    --card: #131316;
-    --edge: #24242a;
-    --text: #ededf0;
-    --muted: #8b8b95;
-    --dim: #4a4a53;
-    --ok: #7fe0b4;
-    --warm: #e8c77a;
-  }
+:root {
+  --bg: #09090b;
+  --card: #131316;
+  --edge: #24242a;
+  --text: #ededf0;
+  --muted: #8b8b95;
+  --dim: #4a4a53;
+  --ok: #7fe0b4;
+  --warm: #e8c77a;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; font-weight: 400; }
-  html, body { height: 100%; }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+}
 
-  body {
-    min-height: 100dvh;
-    display: grid;
-    place-items: center;
-    padding: 16px;
-    background: radial-gradient(900px 600px at 50% -10%, #1a1a20 0%, var(--bg) 60%);
-    color: var(--text);
-    font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
+html, body { min-height: 100%; }
 
-  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: radial-gradient(900px 600px at 50% -10%, #1a1a20 0%, var(--bg) 60%);
+  color: var(--text);
+  font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
 
-  /* ---------- Panel ---------- */
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.panel {
+  width: min(100%, 340px);
+  background: linear-gradient(180deg, #16161a, #111114);
+  border: 1px solid var(--edge);
+  border-radius: 20px;
+  padding: 16px;
+  font-size: 13px;
+  box-shadow: 0 40px 90px -40px rgba(0,0,0,.9);
+  animation: rise .7s cubic-bezier(.2,.7,.2,1) both;
+}
+
+@media (min-width: 800px) {
   .panel {
-    width: min(100%, 340px);
-    background: linear-gradient(180deg, #16161a, #111114);
-    border: 1px solid var(--edge);
-    border-radius: 20px;
-    padding: 16px;
-    font-size: 13px;
-    box-shadow: 0 40px 90px -40px rgba(0, 0, 0, .9);
-    animation: rise .7s cubic-bezier(.2, .7, .2, 1) both;
+    width: 460px;
+    padding: 26px;
+    border-radius: 26px;
+    font-size: 15px;
   }
-  @media (min-width: 800px) {
-    .panel { width: 460px; padding: 26px; border-radius: 26px; font-size: 15px; }
-  }
+}
 
-  .top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-  .brand { display: flex; align-items: center; gap: 9px; color: var(--muted); letter-spacing: .02em; }
-  .brand svg { width: 18px; height: 18px; }
-  .step { font-size: 11px; color: var(--dim); letter-spacing: .14em; text-transform: uppercase; }
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
 
-  /* ---------- Post mock ---------- */
-  .post {
-    border: 1px solid var(--edge);
-    border-radius: 14px;
-    overflow: hidden;
-    background: #0e0e11;
-  }
-  .post-head { display: flex; align-items: center; gap: 9px; padding: 10px; text-decoration: none; color: inherit; }
-  .avatar {
-    width: 24px; height: 24px; border-radius: 50%;
-    background: conic-gradient(from 200deg, #f09433, #dc2743, #bc1888, #f09433);
-    box-shadow: inset 0 0 0 2px #0e0e11;
-    flex: none;
-  }
-  .bar { height: 6px; border-radius: 4px; background: #22222a; width: 92px; display: block; }
-  .bar.short { width: 56px; }
-  
-  .post-media {
-    aspect-ratio: 1 / 1;
-    display: grid;
-    place-items: center;
-    position: relative;
-    background: radial-gradient(circle at 30% 25%, #2a2a33, #121216 70%);
-    overflow: hidden;
-  }
-  .post-media img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity .6s ease;
-    z-index: 2;
-  }
-  .post-media.loaded img { opacity: 1; }
-  .post-media.loaded .big-heart,
-  .post-media.loaded::after { opacity: 0; pointer-events: none; }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  letter-spacing: .02em;
+}
 
-  .post-media::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, transparent 40%, rgba(255, 255, 255, .035) 50%, transparent 60%);
-    animation: sheen 4s ease-in-out infinite;
-    z-index: 1;
-  }
-  .big-heart { width: 64px; height: 64px; fill: none; stroke: #33333d; stroke-width: 1.4; position: relative; z-index: 3; transition: opacity .4s; }
-  
-  .post-actions { display: flex; gap: 14px; padding: 10px 10px 4px; align-items: center; }
-  .post-actions svg { width: 20px; height: 20px; stroke: var(--text); fill: none; stroke-width: 1.7; }
-  .like { display: grid; place-items: center; transition: transform .2s; cursor: pointer; }
-  .like.liked svg { fill: var(--text); stroke: var(--text); }
-  .like.pop svg { animation: pop .45s ease; }
-  
-  .post-caption { display: flex; flex-direction: column; gap: 6px; padding: 6px 10px 12px; }
+.brand svg { width: 18px; height: 18px; }
 
-  /* ---------- Instructions + CTA ---------- */
-  .instr {
-    margin: 14px 2px 12px;
-    color: var(--muted);
-    line-height: 1.55;
-    text-align: center;
-  }
-  .cta {
-    width: 100%;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    border-radius: 12px;
-    background: var(--text);
-    color: #0b0b0d;
-    letter-spacing: .01em;
-    transition: transform .2s, background .3s;
-  }
-  .cta:hover { transform: translateY(-1px); }
-  .cta:active { transform: scale(.98); }
-  .cta svg { width: 18px; height: 18px; }
+.step {
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
 
-  /* ---------- Status ---------- */
-  .status {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-top: 14px;
-    padding: 12px;
-    min-height: 72px;
-    border: 1px solid var(--edge);
-    border-radius: 14px;
-  }
-  .ring { position: relative; width: 46px; height: 46px; flex: none; }
-  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-  .ring circle { fill: none; stroke-width: 2.5; }
-  .ring .bg { stroke: #24242a; }
-  .ring .fg {
-    stroke: var(--text);
-    stroke-linecap: round;
-    stroke-dasharray: 125.66;
-    stroke-dashoffset: 125.66;
-    transition: stroke-dashoffset .25s linear, stroke .4s;
-  }
-  .ring-num {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    font-size: 14px;
-    font-variant-numeric: tabular-nums;
-  }
-  .status-text { color: var(--muted); line-height: 1.5; }
+.post {
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0e0e11;
+}
 
-  [data-phase="idle"] .ring-num { color: var(--dim); }
-  [data-phase="away"] .fg { stroke: var(--warm); }
-  [data-phase="done"] .fg { stroke: var(--ok); }
-  [data-phase="done"] .status-text { color: var(--text); }
+.post-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px;
+  text-decoration: none;
+  color: inherit;
+}
 
-  /* ---------- Modal ---------- */
-  .modal {
-    position: fixed;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    background: rgba(5, 5, 7, .72);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .4s ease;
-    z-index: 50;
-  }
-  .modal.open { opacity: 1; pointer-events: auto; }
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, #f09433, #dc2743, #bc1888, #f09433);
+  box-shadow: inset 0 0 0 2px #0e0e11;
+  flex: none;
+}
 
-  .sheet {
-    width: min(calc(100% - 32px), 340px);
-    background: #141418;
-    border: 1px solid var(--edge);
-    border-radius: 22px;
-    padding: 22px;
-    text-align: center;
-    transform: translateY(20px) scale(.97);
-    transition: transform .5s cubic-bezier(.2, .7, .2, 1);
-  }
-  @media (min-width: 800px) {
-    .sheet { width: 420px; padding: 30px; }
-  }
-  .modal.open .sheet { transform: none; }
+.bar {
+  height: 6px;
+  border-radius: 4px;
+  background: #22222a;
+  width: 92px;
+  display: block;
+}
 
-  .sheet-icon {
-    width: 44px; height: 44px;
-    margin: 0 auto 14px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: rgba(127, 224, 180, .1);
-    color: var(--ok);
-  }
-  .sheet-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-  .sheet h2 { font-size: 1.15em; letter-spacing: .01em; margin-bottom: 6px; }
-  .sheet p { color: var(--muted); line-height: 1.55; font-size: .92em; margin-bottom: 16px; }
+.bar.short { width: 56px; }
 
-  .code {
-    font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
-    font-size: .8em;
-    background: #0c0c0f;
-    border: 1px dashed #2c2c34;
-    border-radius: 12px;
-    padding: 14px 12px;
-    word-break: break-all;
-    color: #d6d6de;
-    transition: border-color .4s, box-shadow .4s;
-  }
-  .code.glow {
-    border-color: var(--ok);
-    box-shadow: 0 0 0 4px rgba(127, 224, 180, .12);
-  }
+.post-media {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  position: relative;
+  background: radial-gradient(circle at 30% 25%, #2a2a33, #121216 70%);
+  overflow: hidden;
+}
 
-  .copy {
-    position: relative;
-    overflow: hidden;
-    margin-top: 12px;
-    width: 100%;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--text);
-    color: #0b0b0d;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    transition: background .4s, color .4s, transform .15s;
-  }
-  .copy:active { transform: scale(.98); }
-  .copy.copied { background: var(--ok); color: #06150e; }
-  .copy .ico { position: relative; width: 18px; height: 18px; }
-  .copy .ico svg {
-    position: absolute;
-    inset: 0;
-    width: 18px; height: 18px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.9;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .i-copy { transition: opacity .25s, transform .25s; }
-  .i-check {
-    stroke-dasharray: 24;
-    stroke-dashoffset: 24;
-    opacity: 0;
-  }
-  .copy.copied .i-copy { opacity: 0; transform: scale(.5) rotate(-20deg); }
-  .copy.copied .i-check {
-    opacity: 1;
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset .45s .12s ease, opacity .2s .1s;
-  }
+.post-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .6s ease;
+  z-index: 2;
+}
 
-  .ripple {
-    position: absolute;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, .55);
-    transform: translate(-50%, -50%) scale(0);
-    pointer-events: none;
-    animation: ripple .6s ease-out forwards;
-  }
+.post-media.loaded img { opacity: 1; }
 
-  .close {
-    margin-top: 10px;
-    padding: 6px;
-    color: var(--dim);
-    font-size: .85em;
-    transition: color .2s;
-  }
-  .close:hover { color: var(--muted); }
+.post-media.loaded .big-heart,
+.post-media.loaded::after {
+  opacity: 0;
+  pointer-events: none;
+}
 
-  .dot {
-    position: fixed;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 60;
-  }
+.post-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.035) 50%, transparent 60%);
+  animation: sheen 4s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
 
-  /* ---------- Keyframes ---------- */
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(14px) scale(.98); filter: blur(4px); }
-    to   { opacity: 1; transform: none; filter: none; }
-  }
-  @keyframes sheen {
-    0%, 100% { transform: translateX(-100%); }
-    50%      { transform: translateX(100%); }
-  }
-  @keyframes pop {
-    0%   { transform: scale(1); }
-    40%  { transform: scale(1.3); }
-    100% { transform: scale(1); }
-  }
-  @keyframes ripple {
-    to { transform: translate(-50%, -50%) scale(32); opacity: 0; }
-  }
+.big-heart {
+  width: 64px;
+  height: 64px;
+  fill: none;
+  stroke: #33333d;
+  stroke-width: 1.4;
+  position: relative;
+  z-index: 3;
+  transition: opacity .4s;
+}
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
+.post-actions {
+  display: flex;
+  gap: 14px;
+  padding: 10px 10px 4px;
+  align-items: center;
+}
+
+.post-actions a {
+  display: grid;
+  place-items: center;
+}
+
+.post-actions svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--text);
+  fill: none;
+  stroke-width: 1.7;
+}
+
+.like {
+  display: grid;
+  place-items: center;
+  transition: transform .2s;
+  cursor: pointer;
+}
+
+.like.liked svg {
+  fill: #ff4965;
+  stroke: #ff4965;
+}
+
+.like.pop svg { animation: pop .45s ease; }
+
+.post-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 10px 12px;
+}
+
+.instr {
+  margin: 14px 2px 12px;
+  color: var(--muted);
+  line-height: 1.55;
+  text-align: center;
+}
+
+.cta {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border-radius: 12px;
+  background: var(--text);
+  color: #0b0b0d;
+  letter-spacing: .01em;
+  transition: transform .2s, background .3s;
+}
+
+.cta:hover { transform: translateY(-1px); }
+.cta:active { transform: scale(.98); }
+.cta svg { width: 18px; height: 18px; }
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 12px;
+  min-height: 72px;
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+}
+
+.ring {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex: none;
+}
+
+.ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring circle { fill: none; stroke-width: 2.5; }
+.ring .bg { stroke: #24242a; }
+
+.ring .fg {
+  stroke: var(--text);
+  stroke-linecap: round;
+  stroke-dasharray: 125.66;
+  stroke-dashoffset: 125.66;
+  transition: stroke-dashoffset .25s linear, stroke .4s;
+}
+
+.ring-num {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.status-text { color: var(--muted); line-height: 1.5; }
+
+[data-phase="idle"] .ring-num { color: var(--dim); }
+[data-phase="away"] .fg { stroke: var(--warm); }
+[data-phase="done"] .fg { stroke: var(--ok); }
+[data-phase="done"] .status-text { color: var(--text); }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(5,5,7,.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s ease;
+  z-index: 50;
+}
+
+.modal.open { opacity: 1; pointer-events: auto; }
+
+.sheet {
+  width: min(100%, 340px);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  background: #141418;
+  border: 1px solid var(--edge);
+  border-radius: 22px;
+  padding: 22px;
+  text-align: center;
+  transform: translateY(20px) scale(.97);
+  transition: transform .5s cubic-bezier(.2,.7,.2,1);
+}
+
+@media (min-width: 800px) {
+  .sheet { width: 420px; padding: 30px; }
+}
+
+.modal.open .sheet { transform: none; }
+
+.sheet-icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(127,224,180,.1);
+  color: var(--ok);
+}
+
+.sheet-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sheet h2 { font-size: 1.15em; margin-bottom: 6px; }
+.sheet p { color: var(--muted); line-height: 1.55; font-size: .92em; margin-bottom: 16px; }
+
+.code {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: .8em;
+  background: #0c0c0f;
+  border: 1px dashed #2c2c34;
+  border-radius: 12px;
+  padding: 14px 12px;
+  overflow-wrap: anywhere;
+  color: #d6d6de;
+  transition: border-color .4s, box-shadow .4s;
+}
+
+.code.glow {
+  border-color: var(--ok);
+  box-shadow: 0 0 0 4px rgba(127,224,180,.12);
+}
+
+.copy {
+  position: relative;
+  overflow: hidden;
+  margin-top: 12px;
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  background: var(--text);
+  color: #0b0b0d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  transition: background .4s, color .4s, transform .15s;
+}
+
+.copy:active { transform: scale(.98); }
+.copy.copied { background: var(--ok); color: #06150e; }
+.copy .ico { position: relative; width: 18px; height: 18px; flex: none; }
+
+.copy .ico svg {
+  position: absolute;
+  inset: 0;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.i-copy { transition: opacity .25s, transform .25s; }
+
+.i-check {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  opacity: 0;
+}
+
+.copy.copied .i-copy { opacity: 0; transform: scale(.5) rotate(-20deg); }
+
+.copy.copied .i-check {
+  opacity: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset .45s .12s ease, opacity .2s .1s;
+}
+
+.ripple {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.55);
+  transform: translate(-50%,-50%) scale(0);
+  pointer-events: none;
+  animation: ripple .6s ease-out forwards;
+}
+
+.close {
+  margin-top: 10px;
+  padding: 8px;
+  color: var(--dim);
+  font-size: .85em;
+}
+
+.close:hover { color: var(--muted); }
+
+.dot {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 60;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px) scale(.98); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes sheen {
+  0%,100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+@keyframes ripple {
+  to { transform: translate(-50%,-50%) scale(32); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
   }
+}
 </style>
 </head>
-<body>
 
+<body>
 <main class="panel" id="panel" data-phase="idle">
   <header class="top">
     <div class="brand">
@@ -352,26 +500,41 @@
   </header>
 
   <article class="post">
-    <a class="post-head" id="profileLink" href="https://www.instagram.com/" target="_blank" rel="noopener">
+    <a class="post-head" id="profileLink"
+       href="https://www.instagram.com/p/De2BK2rFRzh/"
+       target="_blank" rel="noopener noreferrer">
       <span class="avatar"></span>
       <span class="bar"></span>
     </a>
+
     <div class="post-media" id="mediaContainer">
       <svg class="big-heart" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.3 12c-2.3 4.6-9.3 9-9.3 9z"/>
       </svg>
     </div>
+
     <div class="post-actions">
-      <button class="like" id="likeBtn" aria-label="Like preview">
-        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.3 12c-2.3 4.6-9.3 9-9.3 9z"/></svg>
+      <button class="like" id="likeBtn" aria-label="Like preview" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.3 12c-2.3 4.6-9.3 9-9.3 9z"/>
+        </svg>
       </button>
-      <a href="https://www.instagram.com/p/De2BK2rFRzh/" target="_blank" rel="noopener" aria-label="Comments">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20l1.1-4.6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+
+      <a href="https://www.instagram.com/p/De2BK2rFRzh/"
+         target="_blank" rel="noopener noreferrer" aria-label="Comments">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20l1.1-4.6A8.4 8.4 0 1 1 21 11.5z"/>
+        </svg>
       </a>
-      <a href="https://www.instagram.com/p/De2BK2rFRzh/" target="_blank" rel="noopener" aria-label="Share">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 3 11 14M22 3l-7 18-4-7-7-4z"/></svg>
+
+      <a href="https://www.instagram.com/p/De2BK2rFRzh/"
+         target="_blank" rel="noopener noreferrer" aria-label="Share">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M22 3 11 14M22 3l-7 18-4-7-7-4z"/>
+        </svg>
       </a>
     </div>
+
     <div class="post-caption">
       <span class="bar short"></span>
       <span class="bar"></span>
@@ -404,25 +567,44 @@
 <div class="modal" id="modal" aria-hidden="true">
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
     <div class="sheet-icon">
-      <svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 12.5l4.2 4.2L19 7"/>
+      </svg>
     </div>
+
     <h2 id="sheetTitle">Task complete</h2>
     <p>Here is your code. Copy it and keep it safe.</p>
+
     <div class="code" id="code">SimpleX-52510e1c-c431-4dd3-9900-2ede6059693d</div>
+
     <button class="copy" id="copyBtn">
       <span class="ico">
-        <svg class="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/></svg>
-        <svg class="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></svg>
+        <svg class="i-copy" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="9" y="9" width="11" height="11" rx="2.5"/>
+          <path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/>
+        </svg>
+        <svg class="i-check" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12.5l4.2 4.2L19 7"/>
+        </svg>
       </span>
-      <span class="label" id="copyLabel">Copy code</span>
+      <span id="copyLabel">Copy code</span>
     </button>
+
     <button class="close" id="closeBtn">Close</button>
   </div>
 </div>
 
 <script>
+(() => {
+  "use strict";
+
   const CODE = "SimpleX-52510e1c-c431-4dd3-9900-2ede6059693d";
   const POST_URL = "https://www.instagram.com/p/De2BK2rFRzh/";
+
+  // Configure the preview image here.
+  // Put post-preview.jpg beside this HTML file.
+  const PREVIEW_IMAGE = "./post-preview.jpg";
+
   const STAY_SECONDS = 4;
   const COUNT_SECONDS = 30;
   const RING_C = 2 * Math.PI * 20;
@@ -435,7 +617,8 @@
     done: "Task complete."
   };
 
-  const $ = (id) => document.getElementById(id);
+  const $ = id => document.getElementById(id);
+
   const panel = $("panel");
   const statusText = $("statusText");
   const ringNum = $("ringNum");
@@ -445,116 +628,162 @@
   const copyLabel = $("copyLabel");
   const codeEl = $("code");
   const mediaContainer = $("mediaContainer");
-  const profileLink = $("profileLink");
 
   let phase = "idle";
   let away = false;
   let endAt = 0;
   let timer = null;
+  let copyResetTimer = null;
 
-  // ---------- Fetch real image while keeping our exact custom mockup design ----------
-  fetch(`https://api.instagram.com/oembed?url=${encodeURIComponent(POST_URL)}&omitscript=true`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.thumbnail_url) {
-        const img = document.createElement("img");
-        img.src = data.thumbnail_url;
-        img.alt = "Instagram post";
-        mediaContainer.appendChild(img);
-        mediaContainer.classList.add("loaded"); // Fades out shimmer and center heart cleanly when loaded!
-      }
-      if (data.author_name) {
-        profileLink.href = `https://www.instagram.com/${data.author_name}/`;
-      }
-    })
-    .catch(() => {
-      // Fallback if offline/CORS restrictions apply on localhost
-    });
+  // Keep all post links pointing to the same real post.
+  $("profileLink").href = POST_URL;
 
-  // ---------- Ring + phase rendering ----------
+  document.querySelectorAll(".post-actions a").forEach(link => {
+    link.href = POST_URL;
+  });
+
+  // Load the local preview without depending on Instagram's API.
+  const img = new Image();
+  img.alt = "Instagram post preview";
+  img.decoding = "async";
+
+  img.onload = () => {
+    if (!img.isConnected) {
+      mediaContainer.appendChild(img);
+    }
+    mediaContainer.classList.add("loaded");
+  };
+
+  img.onerror = () => {
+    mediaContainer.classList.remove("loaded");
+    console.warn(
+      "Preview image could not load. Check that post-preview.jpg exists beside the HTML file."
+    );
+  };
+
+  img.src = PREVIEW_IMAGE;
+
+  // Ring and phase rendering.
   function render(left, total) {
+    const fraction = Math.max(0, Math.min(1, left / total));
     ringFg.style.strokeDasharray = RING_C;
-    ringFg.style.strokeDashoffset = RING_C * (1 - left / total);
-    ringNum.textContent = Math.ceil(left);
+    ringFg.style.strokeDashoffset = RING_C * (1 - fraction);
+    ringNum.textContent = String(Math.ceil(left));
   }
 
-  function setPhase(p) {
-    phase = p;
-    panel.dataset.phase = p;
-    statusText.textContent = TEXT[p];
-    if (p === "idle") render(COUNT_SECONDS, COUNT_SECONDS);
-    if (p === "watch") render(STAY_SECONDS, STAY_SECONDS);
-    if (p === "done") {
+  function setPhase(nextPhase) {
+    phase = nextPhase;
+    panel.dataset.phase = nextPhase;
+    statusText.textContent = TEXT[nextPhase];
+
+    if (nextPhase === "idle") {
+      render(COUNT_SECONDS, COUNT_SECONDS);
+    } else if (nextPhase === "watch") {
+      render(STAY_SECONDS, STAY_SECONDS);
+    } else if (nextPhase === "away") {
+      render(STAY_SECONDS, STAY_SECONDS);
+    } else if (nextPhase === "counting") {
+      render(COUNT_SECONDS, COUNT_SECONDS);
+    } else if (nextPhase === "done") {
+      ringFg.style.strokeDasharray = RING_C;
       ringFg.style.strokeDashoffset = 0;
       ringNum.textContent = "✓";
     }
   }
 
-  // ---------- Flow ----------
+  // Open the actual post in a new tab.
   $("openBtn").addEventListener("click", () => {
-    window.open(POST_URL, "_blank", "noopener");
-    if (phase === "idle") setPhase("watch");
+    window.open(POST_URL, "_blank", "noopener,noreferrer");
+
+    if (phase === "idle") {
+      setPhase("watch");
+    }
   });
 
-  $("likeBtn").addEventListener("click", (e) => {
-    const btn = e.currentTarget;
-    btn.classList.toggle("liked");
+  // This only changes the visual preview. It does not like anything on Instagram.
+  $("likeBtn").addEventListener("click", event => {
+    const btn = event.currentTarget;
+    const liked = btn.classList.toggle("liked");
+
+    btn.setAttribute("aria-pressed", String(liked));
     btn.classList.remove("pop");
     void btn.offsetWidth;
     btn.classList.add("pop");
   });
 
   function onLeave() {
-    if (away) return;
-    if (phase === "watch") {
-      away = true;
-      endAt = Date.now() + STAY_SECONDS * 1000;
-      setPhase("away");
-    }
+    if (away || phase !== "watch") return;
+
+    away = true;
+    endAt = Date.now() + STAY_SECONDS * 1000;
+    setPhase("away");
   }
 
   function onReturn() {
     if (!away) return;
+
     away = false;
-    if (phase === "away") setPhase("watch");
+
+    if (phase === "away") {
+      const left = Math.max(0, (endAt - Date.now()) / 1000);
+
+      if (left <= 0) {
+        startCountdown();
+      } else {
+        // Returning early cancels the away timer.
+        setPhase("watch");
+      }
+    }
   }
 
   document.addEventListener("visibilitychange", () => {
-    document.hidden ? onLeave() : onReturn();
+    if (document.hidden) onLeave();
+    else onReturn();
   });
+
   window.addEventListener("blur", onLeave);
   window.addEventListener("focus", onReturn);
 
   function startCountdown() {
+    away = false;
     endAt = Date.now() + COUNT_SECONDS * 1000;
     setPhase("counting");
   }
 
   function finish() {
     setPhase("done");
-    setTimeout(openModal, 350);
+    openModal();
   }
 
-  timer = setInterval(() => {
+  timer = window.setInterval(() => {
     if (phase !== "away" && phase !== "counting") return;
+
+    const total = phase === "away" ? STAY_SECONDS : COUNT_SECONDS;
     const left = Math.max(0, (endAt - Date.now()) / 1000);
 
+    render(left, total);
+
+    if (left > 0) return;
+
     if (phase === "away") {
-      render(left, STAY_SECONDS);
-      if (left <= 0) startCountdown();
-    } else {
-      render(left, COUNT_SECONDS);
-      if (left <= 0) {
-        clearInterval(timer);
-        finish();
+      // Only advance if the page is still in the background.
+      if (document.hidden || !document.hasFocus()) {
+        startCountdown();
+      } else {
+        away = false;
+        setPhase("watch");
       }
+    } else if (phase === "counting") {
+      window.clearInterval(timer);
+      finish();
     }
   }, 200);
 
-  // ---------- Modal ----------
+  // Completion modal.
   function openModal() {
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
+    $("closeBtn").focus();
   }
 
   function closeModal() {
@@ -563,73 +792,123 @@
   }
 
   $("closeBtn").addEventListener("click", closeModal);
-  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 
-  // ---------- Copy ----------
+  modal.addEventListener("click", event => {
+    if (event.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeModal();
+  });
+
+  // Copy code with a fallback for browsers without Clipboard API access.
   function fallbackCopy() {
-    const t = document.createElement("textarea");
-    t.value = CODE;
-    t.style.position = "fixed";
-    t.style.opacity = "0";
-    document.body.appendChild(t);
-    t.select();
-    try { document.execCommand("copy"); } catch (_) {}
-    t.remove();
+    const textarea = document.createElement("textarea");
+    textarea.value = CODE;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.setAttribute("readonly", "");
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    let success = false;
+
+    try {
+      success = document.execCommand("copy");
+    } catch (_) {
+      success = false;
+    }
+
+    textarea.remove();
+    return success;
   }
 
   function ripple(btn, x, y) {
-    const r = btn.getBoundingClientRect();
-    const s = document.createElement("span");
-    s.className = "ripple";
-    s.style.left = (x - r.left) + "px";
-    s.style.top = (y - r.top) + "px";
-    btn.appendChild(s);
-    setTimeout(() => s.remove(), 650);
+    const rect = btn.getBoundingClientRect();
+    const span = document.createElement("span");
+
+    span.className = "ripple";
+    span.style.left = (x - rect.left) + "px";
+    span.style.top = (y - rect.top) + "px";
+
+    btn.appendChild(span);
+    window.setTimeout(() => span.remove(), 650);
   }
 
   function burst(x, y) {
     const colors = ["#7fe0b4", "#e8c77a", "#ededf0"];
+
     for (let i = 0; i < 14; i++) {
-      const d = document.createElement("i");
-      d.className = "dot";
-      d.style.background = colors[i % colors.length];
-      d.style.left = x + "px";
-      d.style.top = y + "px";
-      document.body.appendChild(d);
-      const a = Math.random() * Math.PI * 2;
-      const dist = 40 + Math.random() * 50;
-      d.animate([
-        { transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
-        { transform: `translate(calc(-50% + ${Math.cos(a) * dist}px), calc(-50% + ${Math.sin(a) * dist}px)) scale(0)`, opacity: 0 }
-      ], { duration: 700 + Math.random() * 250, easing: "cubic-bezier(.2,.7,.2,1)" })
-        .onfinish = () => d.remove();
+      const dot = document.createElement("i");
+      dot.className = "dot";
+      dot.style.background = colors[i % colors.length];
+      dot.style.left = x + "px";
+      dot.style.top = y + "px";
+      document.body.appendChild(dot);
+
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 40 + Math.random() * 50;
+
+      if (typeof dot.animate === "function") {
+        const animation = dot.animate([
+          {
+            transform: "translate(-50%,-50%) scale(1)",
+            opacity: 1
+          },
+          {
+            transform: `translate(calc(-50% + ${Math.cos(angle) * distance}px), calc(-50% + ${Math.sin(angle) * distance}px)) scale(0)`,
+            opacity: 0
+          }
+        ], {
+          duration: 700 + Math.random() * 250,
+          easing: "cubic-bezier(.2,.7,.2,1)"
+        });
+
+        animation.onfinish = () => dot.remove();
+      } else {
+        window.setTimeout(() => dot.remove(), 1000);
+      }
     }
   }
 
-  let copyResetTimer = null;
+  copyBtn.addEventListener("click", async event => {
+    let copied = false;
 
-  copyBtn.addEventListener("click", async (e) => {
     try {
-      await navigator.clipboard.writeText(CODE);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(CODE);
+        copied = true;
+      }
     } catch (_) {
-      fallbackCopy();
+      copied = false;
     }
 
-    const r = copyBtn.getBoundingClientRect();
-    const cx = e.clientX || r.left + r.width / 2;
-    const cy = e.clientY || r.top + r.height / 2;
+    if (!copied) {
+      copied = fallbackCopy();
+    }
+
+    if (!copied) {
+      copyLabel.textContent = "Select and copy the code above";
+      return;
+    }
+
+    const rect = copyBtn.getBoundingClientRect();
+    const cx = event.clientX || rect.left + rect.width / 2;
+    const cy = event.clientY || rect.top + rect.height / 2;
 
     copyBtn.classList.remove("copied");
     void copyBtn.offsetWidth;
     copyBtn.classList.add("copied");
+
     copyLabel.textContent = "Copied";
     codeEl.classList.add("glow");
-    ripple(copyBtn, cx, cy);
-    burst(r.left + r.width / 2, r.top + r.height / 2);
 
-    clearTimeout(copyResetTimer);
-    copyResetTimer = setTimeout(() => {
+    ripple(copyBtn, cx, cy);
+    burst(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+    window.clearTimeout(copyResetTimer);
+
+    copyResetTimer = window.setTimeout(() => {
       copyBtn.classList.remove("copied");
       copyLabel.textContent = "Copy code";
       codeEl.classList.remove("glow");
@@ -637,6 +916,7 @@
   });
 
   setPhase("idle");
+})();
 </script>
 </body>
 </html>
